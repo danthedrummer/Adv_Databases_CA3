@@ -110,9 +110,9 @@ drop table if exists customer;
 create table data_mart.customer like sakila.customer;
 insert into data_mart.customer select * from sakila.customer;
 
-insert into dim_customer(customer_id, customer_first_name, customer_last_name, customer_email, customer_active, customer_created)
+insert into dim_customer(customer_id, customer_store_id, customer_first_name, customer_last_name, customer_email, customer_active, customer_created)
 (
-	select customer_id, first_name, last_name, email, active, create_date from customer
+	select customer_id, store_id, first_name, last_name, email, active, create_date from customer
 );
 
 #	Extract customer address
@@ -225,6 +225,27 @@ update dim_film set film_original_language =
 drop table if exists rental;
 create table data_mart.rental like sakila.rental;
 insert into data_mart.rental select * from sakila.rental;
+
+insert into fact_rental(customer_key, staff_key)
+(
+	select customer_id, staff_id from rental    
+);
+
+update fact_rental set store_key =
+(
+	select customer_store_id from dim_customer
+    where customer_id = fact_rental.customer_key
+);
+
+update fact_rental set film_key =
+(
+	select film_id from sakila.inventory
+    where inventory_id = 
+    (
+		select inventory_id from rental
+        where rental_id = fact_rental.rental_id
+    )
+);
 
 ### Remove temporary tables ###
 drop table if exists staff;

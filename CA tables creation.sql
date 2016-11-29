@@ -36,6 +36,7 @@ create table dim_film(
 
 create table dim_customer(
 	customer_key int(8) unsigned not null auto_increment primary key,
+    customer_store_id int(8) unsigned not null,
     customer_id int(8) unsigned not null,
     customer_first_name varchar(45) not null,
     customer_last_name varchar(45) not null,
@@ -60,16 +61,16 @@ create table dim_staff(
 
 create table fact_rental(
 	rental_id int(8) unsigned not null auto_increment primary key,
-    customer_key int(8) unsigned not null,
+    customer_key int(8) unsigned,
     foreign key (customer_key) references dim_customer(customer_key),
-    staff_key int(8) unsigned not null,
+    staff_key int(8) unsigned,
     foreign key (staff_key) references dim_staff(staff_key),
-    film_key int(8) unsigned not null,
+    film_key int(8) unsigned,
     foreign key (film_key) references dim_film(film_key),
-    store_key int(8) unsigned not null,
+    store_key int(8) unsigned,
     foreign key (store_key) references dim_store(store_key),
-    rental_date timestamp not null,
-    return_date timestamp not null,
-    count_returns int(10) not null,
-    count_rentals int(10) unsigned not null
+    rental_date timestamp,
+    return_date timestamp,
+    count_returns int(10) unsigned,
+    count_rentals int(10) unsigned
 );
