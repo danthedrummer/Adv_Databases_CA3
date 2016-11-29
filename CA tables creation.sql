@@ -7,37 +7,31 @@ use data_mart;
 create table dim_store(
 	store_key int(8) unsigned not null auto_increment primary key,
     store_id int(8) not null,
-    store_address varchar(64) not null,
-    store_district varchar(20) not null,
-    store_postal_code varchar(10) not null,
-    store_phone_number varchar(20) not null,
-    store_city varchar(50) not null,
-    store_country varchar(50) not null,
-    store_manager_staff_id int(8) unsigned not null,
-    store_manager_first_name varchar(45) not null,
-    store_manager_last_name varchar(45) not null,
-    store_version_number smallint(5) unsigned not null,
-    store_valid_from date not null,
-    store_valid_through date not null
+    store_address varchar(64),
+    store_district varchar(20),
+    store_postal_code varchar(10),
+    store_phone_number varchar(20),
+    store_city varchar(50),
+    store_country varchar(50),
+    store_manager_staff_id int(8) unsigned,
+    store_manager_first_name varchar(45),
+    store_manager_last_name varchar(45)
     );
     
 create table dim_film(
 	film_key int(8) unsigned not null auto_increment primary key,
+    film_id int(8) unsigned not null,
     film_title varchar(64) not null,
-    film_description text(255) not null,
-    film_release_year smallint(5) unsigned not null,
-    film_language varchar(20) not null,
-    film_original_language varchar(20) not null,
-    rental_duration tinyint(3) unsigned not null,
-    rental_rate decimal(4, 2) not null,
-    duration int(8) unsigned not null,
-    replacement_cost decimal(5, 2) not null,
-    rating_code enum('G','PG','PG-13','R','NC-17') not null,
-    rating_text varchar(30) not null,
-    has_trailers enum('Yes','No') not null,
-    has_commentaries enum('Yes','No') not null,
-    has_deleted_scenes enum('Yes','No') not null,
-    has_behind_the_scenes enum('Yes','No') not null
+    film_description text(255),
+    film_release_year smallint(5) unsigned,
+    film_language varchar(20),
+    film_original_language varchar(20),
+    rental_duration tinyint(3) unsigned not null default '3',
+    rental_rate decimal(4, 2) not null default '4.99',
+    duration int(8) unsigned,
+    replacement_cost decimal(5, 2) not null default '19.99',
+    rating_code enum('G','PG','PG-13','R','NC-17') default 'G',
+    special_features set('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')
 );
 
 create table dim_customer(
@@ -45,18 +39,15 @@ create table dim_customer(
     customer_id int(8) unsigned not null,
     customer_first_name varchar(45) not null,
     customer_last_name varchar(45) not null,
-    customer_email varchar(50) not null,
-    customer_active char(3) not null,
-    customer_created date not null,
-    customer_address varchar(64) not null,
-    customer_district varchar(20) not null,
-    customer_postal_code varchar(10) not null,
-    customer_phone_number varchar(20) not null,
-    customer_city varchar(50) not null,
-    customer_country varchar(50) not null,
-    customer_version_number smallint(5) unsigned not null,
-    customer_valid_from date not null,
-    customer_valid_through date not null
+    customer_email varchar(50),
+    customer_active char(3),
+    customer_created date,
+    customer_address varchar(64),
+    customer_district varchar(20),
+    customer_postal_code varchar(10),
+    customer_phone_number varchar(20),
+    customer_city varchar(50),
+    customer_country varchar(50)
 );
 
 create table dim_staff(
@@ -64,11 +55,7 @@ create table dim_staff(
     staff_first_name varchar(45) not null,
     staff_last_name varchar(45) not null,
     staff_id int(8) unsigned not null,
-    staff_store_id int(8) unsigned not null,
-    staff_version_number smallint(5) unsigned not null,
-    staff_valid_from date not null,
-    staff_valid_through date not null,
-    staff_active char(3) not null
+    staff_store_id int(8) unsigned
 );
 
 create table fact_rental(
