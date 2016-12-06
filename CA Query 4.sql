@@ -6,7 +6,7 @@ select
     dim_film.film_title as 'Film Name'
 from dim_customer
 inner join fact_rental
-	on dim_customer.customer_key = fact_rental.customer_key
+	on dim_customer.customer_id = fact_rental.customer_id
 inner join dim_film
 	on fact_rental.film_key = dim_film.film_key
 where fact_rental.return_date is null;
