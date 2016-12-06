@@ -8,9 +8,9 @@ drop table if exists staff;
 create table data_mart.staff like sakila.staff;
 insert into data_mart.staff select * from sakila.staff;
 
-insert into dim_staff(staff_first_name, staff_last_name, staff_id, staff_store_id)
+insert into dim_staff(staff_first_name, staff_last_name, staff_store_id)
 (
-	select first_name, last_name, staff_id, store_id from staff
+	select first_name, last_name, store_id from staff
 );
 
 ###	Store table population ###

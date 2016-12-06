@@ -52,7 +52,6 @@ create table dim_staff(
 	staff_key int(8) unsigned not null auto_increment primary key,
     staff_first_name varchar(45) not null,
     staff_last_name varchar(45) not null,
-    staff_id int(8) unsigned not null,
     staff_store_id int(8) unsigned
 );
 
