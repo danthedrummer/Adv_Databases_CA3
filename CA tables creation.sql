@@ -20,12 +20,10 @@ create table dim_store(
     
 create table dim_film(
 	film_key int(8) unsigned not null auto_increment primary key,
-    film_id int(8) unsigned not null,
     film_title varchar(64) not null,
     film_description text(255),
     film_release_year smallint(5) unsigned,
     film_language varchar(20),
-    film_original_language varchar(20),
     rental_duration tinyint(3) unsigned not null default '3',
     rental_rate decimal(4, 2) not null default '4.99',
     duration int(8) unsigned,
@@ -69,8 +67,6 @@ create table fact_rental(
     foreign key (film_key) references dim_film(film_key),
     store_key int(8) unsigned,
     foreign key (store_key) references dim_store(store_key),
-    rental_date timestamp,
-    return_date timestamp,
-    count_returns int(10) unsigned,
-    count_rentals int(10) unsigned
+    rental_date datetime,
+    return_date datetime
 );

@@ -8,9 +8,9 @@ drop table if exists staff;
 create table data_mart.staff like sakila.staff;
 insert into data_mart.staff select * from sakila.staff;
 
-insert into dim_staff(staff_first_name, staff_last_name, staff_id)
+insert into dim_staff(staff_first_name, staff_last_name, staff_id, staff_store_id)
 (
-	select first_name, last_name, staff_id from staff
+	select first_name, last_name, staff_id, store_id from staff
 );
 
 ###	Store table population ###
@@ -194,9 +194,9 @@ drop table if exists film;
 create table data_mart.film like sakila.film;
 insert into data_mart.film select * from sakila.film;
 
-insert into dim_film(film_id, film_title, film_description, film_release_year, rental_duration, rental_rate, duration, replacement_cost, rating_code, special_features)
+insert into dim_film(film_title, film_description, film_release_year, rental_duration, rental_rate, duration, replacement_cost, rating_code, special_features)
 (
-	select film_id, title, description, release_year, rental_duration, rental_rate, length, replacement_cost, rating, special_features from film
+	select title, description, release_year, rental_duration, rental_rate, length, replacement_cost, rating, special_features from film
 );
 
 #	Extract film language 
@@ -206,18 +206,7 @@ update dim_film set film_language =
     where language_id = 
     (
 		select language_id from film
-        where film_id = dim_film.film_id
-    )
-);
-
-#	Extract original film language 
-update dim_film set film_original_language =
-(
-	select name from sakila.language
-    where language_id = 
-    (
-		select original_language_id from film
-        where film_id = dim_film.film_id
+        where film_id = dim_film.film_key
     )
 );
 
@@ -247,9 +236,67 @@ update fact_rental set film_key =
     )
 );
 
+update fact_rental set rental_date =
+(
+	select rental_date from sakila.rental
+    where rental_id =
+    (
+		select rental_id from rental
+        where rental_id = fact_rental.rental_id
+    )
+), return_date =
+(
+	select return_date from sakila.rental
+    where rental_id =
+    (
+		select rental_id from rental
+        where rental_id = fact_rental.rental_id
+    )
+);
+
 ### Remove temporary tables ###
 drop table if exists staff;
 drop table if exists store;
 drop table if exists customer;
 drop table if exists film;
 drop table if exists rental;
+
+#	Adds 2 Spanish films to the list to help populate a query
+insert into dim_film (film_title, film_description, film_release_year,
+film_language, duration, rating_code) values
+(
+	'Ocho apellidos vascos',
+    'Ocho apellidos vascos (English: Eight Basque Surnames), known as Spanish Affair in English, is a 2014 Spanish comedy film directed by Emilio Martínez-Lázaro.', 
+    2014, 'Spanish', 98, 'R'
+),(
+	'Y Tu Mamá También',
+    'A coming-of-age story about two teenage boys who take a road trip with a woman in her late twenties.',
+    2001, 'Spanish', 106, 'PG-13'
+);
+
+insert into fact_rental 
+(
+	customer_key,
+    staff_key,
+    film_key,
+    store_key,
+    rental_date,
+    return_date
+) values
+(
+	20, 1, 1024, 1,
+    '2006-02-13 15:16:03',
+    '2006-02-16 15:16:03'
+),(
+	49, 1, 1025, 1,
+    '2006-02-15 15:16:03',
+    '2006-02-18 15:16:03'
+),(
+	25, 1, 1024, 1,
+    '2006-02-16 15:16:03',
+    '2006-02-19 15:16:03'
+),(
+	25, 2, 1024, 2,
+    '2006-02-16 15:16:03',
+    '2006-02-19 15:16:03'
+);
