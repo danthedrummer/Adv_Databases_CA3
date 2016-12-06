@@ -215,7 +215,7 @@ drop table if exists rental;
 create table data_mart.rental like sakila.rental;
 insert into data_mart.rental select * from sakila.rental;
 
-insert into fact_rental(customer_key, staff_key)
+insert into fact_rental(customer_id, staff_key)
 (
 	select customer_id, staff_id from rental    
 );
@@ -223,7 +223,7 @@ insert into fact_rental(customer_key, staff_key)
 update fact_rental set store_key =
 (
 	select customer_store_id from dim_customer
-    where customer_id = fact_rental.customer_key
+    where customer_id = fact_rental.customer_id
 );
 
 update fact_rental set film_key =
@@ -276,7 +276,7 @@ film_language, duration, rating_code) values
 
 insert into fact_rental 
 (
-	customer_key,
+	customer_id,
     staff_key,
     film_key,
     store_key,

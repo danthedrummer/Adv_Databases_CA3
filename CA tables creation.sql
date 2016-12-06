@@ -33,9 +33,8 @@ create table dim_film(
 );
 
 create table dim_customer(
-	customer_key int(8) unsigned not null auto_increment primary key,
+	customer_id int(8) unsigned not null auto_increment primary key,
     customer_store_id int(8) unsigned not null,
-    customer_id int(8) unsigned not null,
     customer_first_name varchar(45) not null,
     customer_last_name varchar(45) not null,
     customer_email varchar(50),
@@ -59,8 +58,8 @@ create table dim_staff(
 
 create table fact_rental(
 	rental_id int(8) unsigned not null auto_increment primary key,
-    customer_key int(8) unsigned,
-    foreign key (customer_key) references dim_customer(customer_key),
+    customer_id int(8) unsigned,
+    foreign key (customer_id) references dim_customer(customer_id),
     staff_key int(8) unsigned,
     foreign key (staff_key) references dim_staff(staff_key),
     film_key int(8) unsigned,
